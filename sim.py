@@ -40,13 +40,27 @@ import math
 import random
 from Tkinter import *
 
-
-#VARIABLES, LISTS, ETC. ALL INITIALIZE HERE
+############################################
+#VARIABLES, LISTS, ETC. ALL INITIALIZE HERE#
+############################################
 key = ['']
 alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 
+####################################
+#CANVAS, WIDGETS, AND DRAWINGS HERE#
+####################################
+#Basic initlization
+rootMain = Tkinter.Tk()
+rootMain.title("SIM - Student Information Manager")
+canvas = Tkinter.Canvas(rootMain, width=900, height=900, background='#FFFFFF')
 
+#Username and Password Entry Boxes (WIP)
+username = Entry(canvas)
+password = Entry(canvas)
 
+################
+#FUNCTIONS HERE#
+################
 def encrypt(phrase):
     encrypted = ''
     for i in range(len(phrase)):
@@ -66,4 +80,5 @@ def decrypt(phrase):
                 decrypted += alphabet[j]
     return decrypted
 
-
+#MUST BE THE LAST LINE OF CODE
+rootMain.mainloop()
