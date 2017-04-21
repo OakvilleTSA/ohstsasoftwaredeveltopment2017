@@ -43,8 +43,65 @@ from Tkinter import *
 ############################################
 #VARIABLES, LISTS, ETC. ALL INITIALIZE HERE#
 ############################################
-key = ['']
+key = []
 alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+users = [{'username': 'admin', 'grades': {'English': 100, 'Math': 100, 'Social Studies': 100, 'Science': 100}, 'password': '', 'code': []}]
+
+
+
+################
+#FUNCTIONS HERE#
+################
+'''For functions that need to be BEFORE the initlization of the canvas'''
+
+#Encrypt and Decrypt passwords
+def encrypt(phrase):
+    phrase = phrase.lower()
+    encrypted = ''
+    key = []
+    for i in range(len(phrase)):
+        key.append(random.randint(1,9))
+        for j in range(len(alphabet)):
+           if phrase[i] == alphabet[j]:
+                j += key[i]
+ 		encrypted += alphabet[j]
+    return encrypted, key
+
+    
+def decrypt(phrase, code):
+    decrypted = ''
+    for i in range(len(phrase)):
+        for j in range(len(alphabet)):
+            if phrase[i] == alphabet[j]:
+                j -= code[i]
+                decrypted += alphabet[j]
+    return decrypted
+
+def loginAttempt():
+    userid = str(usernameB.get())
+    match = False
+    for account in users:
+        if userid == account['username']:
+            if decrypt(account['password'], account['code']) == passwordB.get().lower():
+                #open next screen
+                print 'In the system'
+                match = True
+                sim()
+    else:
+        if match == False:
+            password, key = encrypt(passwordB.get())
+            user = {'username': userid,
+                    'password': password,
+                    'code': key,
+                    'grades': { 'English': 0,
+                                'Math': 0,
+                                'Social Studies': 0,
+                                'Science': 0 } }
+            users.append(user)
+            print user
+        
+
+
 
 ####################################
 #CANVAS, WIDGETS, AND DRAWINGS HERE#
@@ -52,33 +109,40 @@ alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n'
 #Basic initlization
 rootMain = Tkinter.Tk()
 rootMain.title("SIM - Student Information Manager")
-canvas = Tkinter.Canvas(rootMain, width=900, height=900, background='#FFFFFF')
+rootMain.minsize(600,600)
+canvas = Tkinter.Canvas(rootMain, width=900, height=600, background='#FFFFFF')
+canvas.grid(row=0, rowspan=50, column=4)
+title = Tkinter.Label(rootMain, text="Student \nInformation \nManager", font=("Arial", 30))
+title.grid(row=0,column=0)
 
 #Username and Password Entry Boxes (WIP)
-username = Entry(canvas)
-password = Entry(canvas)
+usernameL = Tkinter.Label(rootMain, text="Username:")
+usernameB = Tkinter.Entry(rootMain)
+passwordL = Tkinter.Label(rootMain, text="Password:")
+passwordB = Tkinter.Entry(rootMain)
+submit = Tkinter.Button(rootMain, text="Submit", command=loginAttempt)
 
-################
-#FUNCTIONS HERE#
-################
-def encrypt(phrase):
-    encrypted = ''
-    for i in range(len(phrase)):
-        key.append(rand.int(0,9))
-        for j in range(len(alphabet)):
-           if phrase[i] == alphabet[j]:
-                j += key[i]
- 		encrypted += alphabet[j]
-    return encrypted
-    
-def decrypt(phrase):
-    decrypted = ''
-    for i in range(len(phrase)):
-        for j in range(len(alphabet)):
-            if phrase[i] == alphabet[j]:
-                j -= key[i]
-                decrypted += alphabet[j]
-    return decrypted
+#Place widgets on grid
+usernameL.grid(row=1,column=0)
+usernameB.grid(row=2,column=0)
+passwordL.grid(row=3,column=0)
+passwordB.grid(row=4,column=0)
+submit.grid(row=5,column=0)
 
-#MUST BE THE LAST LINE OF CODE
-rootMain.mainloop()
+
+
+
+#####################
+#MORE FUNCTIONS HERE#
+#####################
+'''For functions that need to be AFTER the initlization of the canvas'''
+def sim():
+    draw
+
+
+
+###############################
+#MUST BE THE LAST LINE OF CODE#
+############################### 
+def start():
+    rootMain.mainloop()
