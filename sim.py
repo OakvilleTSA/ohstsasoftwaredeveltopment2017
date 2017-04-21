@@ -43,8 +43,41 @@ from Tkinter import *
 ############################################
 #VARIABLES, LISTS, ETC. ALL INITIALIZE HERE#
 ############################################
-key = ['']
+key = []
 alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+users = []
+
+################
+#FUNCTIONS HERE#
+################
+
+#Encrypt and Decrypt passwords
+def encrypt(phrase):
+    encrypted = ''
+    key = []
+    for i in range(len(phrase)):
+        key.append(random.randint(1,9))
+        for j in range(len(alphabet)):
+           if phrase[i] == alphabet[j]:
+                j += key[i]
+ 		encrypted += alphabet[j]
+    return encrypted
+
+    
+def decrypt(phrase, code):
+    decrypted = ''
+    for i in range(len(phrase)):
+        for j in range(len(alphabet)):
+            if phrase[i] == alphabet[j]:
+                j -= code[i]
+                decrypted += alphabet[j]
+    return decrypted
+
+def loginAttempt():
+    if usernameB.get() in users:
+        
+    else:
+        users.append(usernameB.get()
 
 ####################################
 #CANVAS, WIDGETS, AND DRAWINGS HERE#
@@ -52,33 +85,25 @@ alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n'
 #Basic initlization
 rootMain = Tkinter.Tk()
 rootMain.title("SIM - Student Information Manager")
-canvas = Tkinter.Canvas(rootMain, width=900, height=900, background='#FFFFFF')
+rootMain.minsize(600,600)
+canvas = Tkinter.Canvas(rootMain, width=900, height=600, background='#FFFFFF')
+canvas.grid(row=0, rowspan=50, column=4)
 
 #Username and Password Entry Boxes (WIP)
-username = Entry(canvas)
-password = Entry(canvas)
+usernameL = Tkinter.Label(rootMain, text="Username:")
+usernameB = Tkinter.Entry(rootMain)
+passwordL = Tkinter.Label(rootMain, text="Password:")
+passwordB = Tkinter.Entry(rootMain)
+submit = Tkinter.Button(rootMain, text="Submit", command=loginAttempt)
 
-################
-#FUNCTIONS HERE#
-################
-def encrypt(phrase):
-    encrypted = ''
-    for i in range(len(phrase)):
-        key.append(rand.int(0,9))
-        for j in range(len(alphabet)):
-           if phrase[i] == alphabet[j]:
-                j += key[i]
- 		encrypted += alphabet[j]
-    return encrypted
-    
-def decrypt(phrase):
-    decrypted = ''
-    for i in range(len(phrase)):
-        for j in range(len(alphabet)):
-            if phrase[i] == alphabet[j]:
-                j -= key[i]
-                decrypted += alphabet[j]
-    return decrypted
+#Place widgets on grid
+usernameL.grid(row=0,column=0)
+usernameB.grid(row=1,column=0)
+passwordL.grid(row=2,column=0)
+passwordB.grid(row=3,column=0)
+submit.grid(row=4,column=0)
 
-#MUST BE THE LAST LINE OF CODE
+###############################
+#MUST BE THE LAST LINE OF CODE#
+############################### 
 rootMain.mainloop()
