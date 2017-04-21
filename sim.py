@@ -32,3 +32,53 @@ Hannah Jokuti - Thomas's partner in crime
 Alisa Lazareva - LASANGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
 '''
+
+#IMPORTS
+import Tkinter
+import tkFont
+import math
+import random
+from Tkinter import *
+
+############################################
+#VARIABLES, LISTS, ETC. ALL INITIALIZE HERE#
+############################################
+key = ['']
+alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+
+####################################
+#CANVAS, WIDGETS, AND DRAWINGS HERE#
+####################################
+#Basic initlization
+rootMain = Tkinter.Tk()
+rootMain.title("SIM - Student Information Manager")
+canvas = Tkinter.Canvas(rootMain, width=900, height=900, background='#FFFFFF')
+
+#Username and Password Entry Boxes (WIP)
+username = Entry(canvas)
+password = Entry(canvas)
+
+################
+#FUNCTIONS HERE#
+################
+def encrypt(phrase):
+    encrypted = ''
+    for i in range(len(phrase)):
+        key.append(rand.int(0,9))
+        for j in range(len(alphabet)):
+           if phrase[i] == alphabet[j]:
+                j += key[i]
+ 		encrypted += alphabet[j]
+    return encrypted
+    
+def decrypt(phrase):
+    decrypted = ''
+    for i in range(len(phrase)):
+        for j in range(len(alphabet)):
+            if phrase[i] == alphabet[j]:
+                j -= key[i]
+                decrypted += alphabet[j]
+    return decrypted
+
+#MUST BE THE LAST LINE OF CODE
+rootMain.mainloop()
