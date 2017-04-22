@@ -44,8 +44,8 @@ from Tkinter import *
 #VARIABLES, LISTS, ETC. ALL INITIALIZE HERE#
 ############################################
 key = []
-alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
-users = [{'username': '', 'grades': {'English': 100, 'Math': 100, 'Social Studies': 100, 'Science': 100}, 'password': '', 'code': [], 'first': 'ad', 'last': 'min', 'role': 'student'}]
+alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5' , '6', '7', '8', '9']
+users = [{'username': '', 'grades': {'English': 100, 'Math': 100, 'Social Studies': 100, 'Science': 100}, 'password': '', 'code': [], 'first': 'ad', 'last': 'min', 'role': 'teacher'}]
 
 
 
@@ -65,7 +65,7 @@ def encrypt(phrase):
            if phrase[i] == alphabet[j]:
                 j += key[i]
                 if j > 26:
-                    j -= 26
+                    j -= len(alphabet)
  		encrypted += alphabet[j]
     return encrypted, key
 
@@ -77,7 +77,7 @@ def decrypt(phrase, code):
             if phrase[i] == alphabet[j]:
                 j -= code[i]
                 if j < 0:
-                    j += 26
+                    j += len(alphabet)
                 decrypted += alphabet[j]
     return decrypted
 
@@ -88,7 +88,6 @@ def loginAttempt():
         if userid == account['username']:
             if decrypt(account['password'], account['code']) == passwordB.get().lower():
                 #open next screen
-                print 'In the system'
                 match = True
                 sim(account)
     else:
@@ -96,23 +95,28 @@ def loginAttempt():
             newUser(userid)
         
 def newUser(userid):
-    rootLogin.destroy()
     rootNew = Tkinter.Tk()
     rootNew.title("SIM - New User")
     rootNew.overrideredirect(False)
     rootNew.minsize(400, 250)
     Label(rootNew, text="New User Detected", font=("Arial", 20)).grid(row=0, column=0)
     Label(rootNew, text="Please indicate if you are a student or teacher", font=("Arial", 15)).grid(row=1, column=0)
-    role = '' #####THESE ARE THE LINES NOT WORKING - ROLE WON'T CHANGE#####
-    Radiobutton(rootNew, text="Teacher", value="teacher", variable=role).grid(row=2, column=0)#####
-    Radiobutton(rootNew, text="Student", value="student", variable=role).grid(row=3, column=0)#####
+    role = StringVar() 
+    role.set("student")
+    def teacher():
+        role.set("teacher")
+    def student():
+        role.set("student")
+    Radiobutton(rootNew, text="Teacher", variable=role, value="teacher", command=teacher).grid(row=2, column=0)
+    Radiobutton(rootNew, text="Student", variable=role, value="student", command=student).grid(row=3, column=0)
     Tkinter.Label(rootNew, text="First Name:").grid(row=4, column=0)
     ent1 = Tkinter.Entry(rootNew)
     ent1.grid(row=5, column=0)
     Tkinter.Label(rootNew, text="Last Name:").grid(row=6, column=0)
     ent2 = Tkinter.Entry(rootNew)
     ent2.grid(row=7, column=0)
-    
+
+
     ###Odd placement but this is where it has to be
     def create():
         password, key = encrypt(passwordB.get())
@@ -120,15 +124,16 @@ def newUser(userid):
                 'password': password,
                 'first': ent1.get(),
                 'last': ent2.get(),
-                'role': role.get(),#####
+                'role': role.get(),
                 'code': key,
                 'grades': { 'English': 0,
                             'Math': 0,
                             'Social Studies': 0,
                             'Science': 0 } }
         users.append(user)
-        print user ##For testing purposes##
         rootNew.destroy()
+                
+
     ###
     
     create = Tkinter.Button(rootNew, text="Create", command=create)
@@ -167,6 +172,13 @@ submit.grid(row=5,column=0)
 '''For functions that need to be AFTER the initlization of the canvas'''
 
 def sim(account):
+    rootLogin.destroy()
+    if account['role'] == 'student':
+        student(account)
+    elif account['role'] == 'teacher':
+        teacher(account)
+
+def student(account):
     def viewGrades():
         rootGrades = Tkinter.Tk()
         rootGrades.title("SIM - Student Information Manager")
@@ -186,21 +198,155 @@ def sim(account):
         print 'Assignments viewed'
     def cAssignments():
         print 'Assignments completed'    
-    rootLogin.destroy()
     rootSim = Tkinter.Tk()
     rootSim.title("SIM - Student Information Manager")
     rootSim.minsize(400,400)
-    if account['role'] == 'student':
-        Tkinter.Label(rootSim, text="Student Information Manager", font=("Arial", 30)).grid(row=0, column=0, columnspan=2)
-        Tkinter.Label(rootSim, text=account['first'] + " " + account['last'], font=("Arial", 20)).grid(row=1, column=0, columnspan=2)
-        grades = Tkinter.Button(rootSim, text="View \nGrades", command=viewGrades, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=2, column=0)
-        test = Tkinter.Button(rootSim, text="Take A \nTest", command=takeTest, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=2, column=1)
-        Tkinter.Label(rootSim).grid(row=3)
-        viewAssignments = Tkinter.Button(rootSim, text="View \nAssignments", command=vAssignments, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=4, column=0)
-        createAssignments = Tkinter.Button(rootSim, text="Complete an \nAssignment", command=cAssignments, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=4, column=1)
+    Tkinter.Label(rootSim, text="Student Information Manager", font=("Arial", 30)).grid(row=0, column=0, columnspan=2)
+    Tkinter.Label(rootSim, text=account['first'] + " " + account['last'], font=("Arial", 20)).grid(row=1, column=0, columnspan=2)
+    grades = Tkinter.Button(rootSim, text="View \nGrades", command=viewGrades, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=2, column=0)
+    test = Tkinter.Button(rootSim, text="Take A \nTest", command=takeTest, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=2, column=1)
+    Tkinter.Label(rootSim).grid(row=3)
+    viewAssignments = Tkinter.Button(rootSim, text="View \nAssignments", command=vAssignments, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=4, column=0)
+    createAssignments = Tkinter.Button(rootSim, text="Complete an \nAssignment", command=cAssignments, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=4, column=1)
 
-    
+def teacher(account):
+    #get list of all students
+    students = []
+    for user in users:
+        if user['role'] == 'student':
+            name = user['last'] + ", " + user['first']
+            students.append(name)
 
+    def viewGrades():
+        rootGrades = Tkinter.Tk()
+        rootGrades.title("SIM - Student Information Manager")
+        rootGrades.minsize(400,400)
+        Tkinter.Label(rootGrades, text="Student Information Manager", font=("Arial", 30)).grid(row=0, column=0, columnspan=3)
+        Tkinter.Label(rootGrades, text=account['first'] + " " + account['last'], font=("Arial", 20)).grid(row=1, column=0, columnspan=3)
+        def english():
+            i = 0
+            for user in users:
+                if user['role'] == 'student':
+                    Tkinter.Label(rootGrades, text=user['last'] + ", " + user['first'], font=("Arial", 15)).grid(row=i+6, column=0)  
+                    Tkinter.Label(rootGrades, text=user['grades']['English'], font=("Arial", 15)).grid(row=i+6, column=2) 
+                i += 1                   
+                  
+        def math():
+            i = 0
+            for user in users:
+                if user['role'] == 'student':
+                    Tkinter.Label(rootGrades, text=user['last'] + ", " + user['first'], font=("Arial", 15)).grid(row=i+6, column=0)  
+                    Tkinter.Label(rootGrades, text=user['grades']['Math'], font=("Arial", 15)).grid(row=i+6, column=2)                    
+                i += 1
+
+        def socialStudies():
+            i = 0
+            for user in users:
+                if user['role'] == 'student':
+                    Tkinter.Label(rootGrades, text=user['last'] + ", " + user['first'], font=("Arial", 15)).grid(row=i+6, column=0)  
+                    Tkinter.Label(rootGrades, text=user['grades']['Social Studies'], font=("Arial", 15)).grid(row=i+6, column=2)                    
+                i += 1
+                
+        def science():
+            i = 0
+            for user in users:
+                if user['role'] == 'student':
+                    Tkinter.Label(rootGrades, text=user['last'] + ", " + user['first'], font=("Arial", 15)).grid(row=i+6, column=0)  
+                    Tkinter.Label(rootGrades, text=user['grades']['Science'], font=("Arial", 15)).grid(row=i+6, column=2)                    
+                i += 1  
+        
+        English = Tkinter.Button(rootGrades, text="English", command=english, width=20, height=2, bg="light gray", font=("Arial", 10)).grid(row=3, column=0)
+        Math = Tkinter.Button(rootGrades, text="Math", command=math, width=20, height=2, bg="light gray", font=("Arial", 10)).grid(row=3, column=2)
+        SocialStudies = Tkinter.Button(rootGrades, text="Social Studies", command=socialStudies, width=20, height=2, bg="light gray", font=("Arial", 10)).grid(row=4, column=0)
+        Science = Tkinter.Button(rootGrades, text="Science", command=science, width=20, height=2, bg="light gray", font=("Arial", 10)).grid(row=4, column=2)
+
+    def makeTest():
+        print 'Test maken'
+
+    def gradeAssignments():
+        print 'Assignments graded'
+
+    def createAssignments():
+        print 'Assignments created' 
+  
+    def viewStudents():
+        rootStudents = Tkinter.Tk()
+        rootStudents.title("SIM - Student Information Manager")
+        rootStudents.minsize(400,400)
+        Tkinter.Label(rootStudents, text="Student Information Manager", font=("Arial", 30)).grid(row=0, column=0, columnspan=3)
+        Tkinter.Label(rootStudents, text=account['first'] + " " + account['last'], font=("Arial", 20)).grid(row=1, column=0, columnspan=3)
+        Tkinter.Label(rootStudents, text='Students:', font=("Arial", 15)).grid(row=2, column=1)
+        for i in range(len(students)):
+            Tkinter.Label(rootStudents, text=students[i], font=("Arial", 15)).grid(row=i+3, column=1)    
+
+    def changeGrades():
+        rootChange = Tkinter.Tk()
+        rootChange.title("SIM - Student Information Manager")
+        rootChange.minsize(400,400)
+        Tkinter.Label(rootChange, text="Student Information Manager", font=("Arial", 30)).grid(row=0, column=0, columnspan=3)
+        Tkinter.Label(rootChange, text=account['first'] + " " + account['last'], font=("Arial", 20)).grid(row=1, column=0, columnspan=3)
+        def english():
+            student = StringVar(rootChange)
+            student.set(students[0])
+           
+            def changed(kid):
+                Tkinter.Label(rootChange, text=kid, font=("Arial", 10)).grid(row=7, column=0)
+                for i in range(len(students)):
+                    if kid == students[i]:
+                        x = -1
+                        for j in users:
+                            if j['role'] == 'student':
+                                x += 1
+                            if i == x:
+                                STUDENT = j
+                person = Tkinter.Label(rootChange, text=kid, font=("Arial", 10)).grid(row=7, column=1)
+                currentGrade = Tkinter.Label(rootChange, text=STUDENT['grades']['English'], font=("Arial", 10)).grid(row=7, column=2)
+                futureGrade = Tkinter.Entry(rootChange).grid(row=7, column=3) ##dont actually remember what I was gonna do with this
+            option = OptionMenu(rootChange, student, *students, command=changed).grid(row=6, column=0)
+            changed(student.get())
+
+
+        def math():
+            i = 0
+            for user in users:
+                if user['role'] == 'student':
+                    Tkinter.Label(rootChange, text=user['last'] + ", " + user['first'], font=("Arial", 15)).grid(row=i+6, column=0)  
+                    Tkinter.Entry(rootChange, font=("Arial", 15)).grid(row=i+6, column=2)                    
+                i += 1
+
+        def socialStudies():
+            i = 0
+            for user in users:
+                if user['role'] == 'student':
+                    Tkinter.Label(rootChange, text=user['last'] + ", " + user['first'], font=("Arial", 15)).grid(row=i+6, column=0)  
+                    Tkinter.Entry(rootChange, text=user['grades']['Social Studies'], font=("Arial", 15)).grid(row=i+6, column=2)                    
+                i += 1
+                
+        def science():
+            i = 0
+            for user in users:
+                if user['role'] == 'student':
+                    Tkinter.Label(rootChange, text=user['last'] + ", " + user['first'], font=("Arial", 15)).grid(row=i+6, column=0)  
+                    Tkinter.Entry(rootChange, text=user['grades']['Science'], font=("Arial", 15)).grid(row=i+6, column=2)                    
+                i += 1  
+        
+        English = Tkinter.Button(rootChange, text="English", command=english, width=20, height=2, bg="light gray", font=("Arial", 10)).grid(row=3, column=0)
+        Math = Tkinter.Button(rootChange, text="Math", command=math, width=20, height=2, bg="light gray", font=("Arial", 10)).grid(row=3, column=2)
+        SocialStudies = Tkinter.Button(rootChange, text="Social Studies", command=socialStudies, width=20, height=2, bg="light gray", font=("Arial", 10)).grid(row=4, column=0)
+        Science = Tkinter.Button(rootChange, text="Science", command=science, width=20, height=2, bg="light gray", font=("Arial", 10)).grid(row=4, column=2)
+
+    rootSim = Tkinter.Tk()
+    rootSim.title("SIM - Student Information Manager")
+    rootSim.minsize(400,400)
+    Tkinter.Label(rootSim, text="Student Information Manager", font=("Arial", 30)).grid(row=0, column=0, columnspan=3)
+    Tkinter.Label(rootSim, text=account['first'] + " " + account['last'], font=("Arial", 20)).grid(row=1, column=0, columnspan=3)
+    vgrades = Tkinter.Button(rootSim, text="View \nGrades", command=viewGrades, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=2, column=0)
+    cgrades = Tkinter.Button(rootSim, text="Change \nGrades", command=changeGrades, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=2, column=1)
+    makeTest = Tkinter.Button(rootSim, text="Make A \nTest", command=makeTest, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=2, column=2)
+    Tkinter.Label(rootSim).grid(row=3)
+    gradeAssignments = Tkinter.Button(rootSim, text="Grade \nAssignments", command=gradeAssignments, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=4, column=0)
+    createAssignments = Tkinter.Button(rootSim, text="Create an \nAssignment", command=createAssignments, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=4, column=1)
+    vstudents = Tkinter.Button(rootSim, text="View \nStudents", command=viewStudents, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=4, column=2)
 ###############################
 #MUST BE THE LAST LINE OF CODE#
 ############################### 
