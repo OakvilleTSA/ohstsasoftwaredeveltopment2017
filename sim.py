@@ -64,6 +64,8 @@ def encrypt(phrase):
         for j in range(len(alphabet)):
            if phrase[i] == alphabet[j]:
                 j += key[i]
+                if j > 26:
+                    j -= 26
  		encrypted += alphabet[j]
     return encrypted, key
 
@@ -74,6 +76,8 @@ def decrypt(phrase, code):
         for j in range(len(alphabet)):
             if phrase[i] == alphabet[j]:
                 j -= code[i]
+                if j < 0:
+                    j += 26
                 decrypted += alphabet[j]
     return decrypted
 
@@ -89,19 +93,46 @@ def loginAttempt():
                 sim()
     else:
         if match == False:
-            password, key = encrypt(passwordB.get())
-            user = {'username': userid,
-                    'password': password,
-                    'code': key,
-                    'grades': { 'English': 0,
-                                'Math': 0,
-                                'Social Studies': 0,
-                                'Science': 0 } }
-            users.append(user)
-            print user
+            newUser(userid)
         
-
-
+def newUser(userid):
+    root = Tkinter.Tk()
+    root.title("SIM - New User")
+    root.overrideredirect(False)
+    width = root.winfo_screenwidth()
+    height = root.winfo_screenheight()
+    root.geometry('%dx%d+%d+%d' % (width*0.4, height*0.4, width*0.1, height*0.1))
+    Label(root, text="New User Detected", font=("Arial", 20)).grid(row=0, column=0)
+    Label(root, text="Please indicate if you are a student or teacher", font=("Arial", 15)).grid(row=1, column=0)
+    role = ''
+    Radiobutton(root, text="Teacher", value="teacher", variable=role).grid(row=2, column=0)
+    Radiobutton(root, text="Student", value="student", variable=role).grid(row=3, column=0)
+    Tkinter.Label(root, text="First Name:").grid(row=4, column=0)
+    ent1 = Tkinter.Entry(root)
+    ent1.grid(row=5, column=0)
+    Tkinter.Label(root, text="Last Name:").grid(row=6, column=0)
+    ent2 = Tkinter.Entry(root)
+    ent2.grid(row=7, column=0)
+    
+    ###Odd placement but this is where it has to be
+    def create():
+        password, key = encrypt(passwordB.get())
+        user = {'username': userid,
+                'password': password,
+                'first': ent1.get(),
+                'last': ent2.get(),
+                'role': role.get(),
+                'code': key,
+                'grades': { 'English': 0,
+                            'Math': 0,
+                            'Social Studies': 0,
+                            'Science': 0 } }
+        users.append(user)
+        print user
+    ###
+    
+    create = Tkinter.Button(root, text="Create", command=create)
+    create.grid(row=8, column=0)
 
 ####################################
 #CANVAS, WIDGETS, AND DRAWINGS HERE#
@@ -138,6 +169,7 @@ submit.grid(row=5,column=0)
 '''For functions that need to be AFTER the initlization of the canvas'''
 def sim():
     draw
+
 
 
 
