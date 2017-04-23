@@ -145,27 +145,32 @@ def newUser(userid):
 ####################################
 #CANVAS, WIDGETS, AND DRAWINGS HERE#
 ####################################
-#Basic initlization
-rootLogin = Tkinter.Tk()
-rootLogin.title("SIM - Student Information Manager")
-rootLogin.minsize(200,300)
-title = Tkinter.Label(rootLogin, text="Student \nInformation \nManager", font=("Arial", 30))
-title.grid(row=0,column=0)
+def init():
+    global usernameB
+    global passwordB
+    global rootLogin
+    #Basic initlization
+    rootLogin = Tkinter.Tk()
+    rootLogin.title("SIM - Student Information Manager")
+    rootLogin.minsize(200,300)
+    title = Tkinter.Label(rootLogin, text="Student \nInformation \nManager", font=("Arial", 30))
+    title.grid(row=0,column=0)
+    
+    #Username and Password Entry Boxes (WIP)
+    usernameL = Tkinter.Label(rootLogin, text="Username:")
+    usernameB = Tkinter.Entry(rootLogin)
+    passwordL = Tkinter.Label(rootLogin, text="Password:")
+    passwordB = Tkinter.Entry(rootLogin)
+    submit = Tkinter.Button(rootLogin, text="Submit", command=loginAttempt)
+    
+    #Place widgets on grid
+    usernameL.grid(row=1,column=0)
+    usernameB.grid(row=2,column=0)
+    passwordL.grid(row=3,column=0)
+    passwordB.grid(row=4,column=0)
+    submit.grid(row=5,column=0)
 
-#Username and Password Entry Boxes (WIP)
-usernameL = Tkinter.Label(rootLogin, text="Username:")
-usernameB = Tkinter.Entry(rootLogin)
-passwordL = Tkinter.Label(rootLogin, text="Password:")
-passwordB = Tkinter.Entry(rootLogin)
-submit = Tkinter.Button(rootLogin, text="Submit", command=loginAttempt)
-
-#Place widgets on grid
-usernameL.grid(row=1,column=0)
-usernameB.grid(row=2,column=0)
-passwordL.grid(row=3,column=0)
-passwordB.grid(row=4,column=0)
-submit.grid(row=5,column=0)
-
+    rootLogin.mainloop()
 
 
 
@@ -197,6 +202,48 @@ def student(account):
 
     def takeTest():
         print 'Test taken'
+        rootTestTaker = Tkinter.Tk()
+        rootTestTaker.title("SIM - Student Information Manager")
+        rootTestTaker.minsize(400,400)
+        Tkinter.Label(rootTestTaker, text="Student Information Manager", font=("Arial", 30)).grid(row=0, column=0, columnspan=4)
+        Tkinter.Label(rootTestTaker, text=account['first'] + " " + account['last'], font=("Arial", 20)).grid(row=1, column=0, columnspan=4)
+        i = 0
+        def quiz():
+            for i in test:
+                rootTestTaker = Tkinter.Tk()
+                rootTestTaker.title("SIM - Student Information Manager")
+                rootTestTaker.minsize(400,400)
+                Tkinter.Label(rootTestTaker, text="Student Information Manager", font=("Arial", 30)).grid(row=0, column=0, columnspan=4)
+                Tkinter.Label(rootTestTaker, text=account['first'] + " " + account['last'], font=("Arial", 20)).grid(row=1, column=0, columnspan=4)
+    
+                Tkinter.Label(rootTestTaker, text="Question:").grid(row=3, column=0)
+                q = Tkinter.Text(rootTestTaker, height=3)
+                q.grid(row=3, column = 1, rowspan=2, columnspan=3)
+                
+                answer = IntVar(rootTestTaker)
+                answer.set(0)
+    
+                answer1 = Tkinter.Radiobutton(rootTestTaker, text="A. "+i[0], variable=answer, value=1)
+                answer1.grid(row=5, column=1, columnspan=3)
+    
+                
+                answer2 = Tkinter.Radiobutton(rootTestTaker, text="B. "+i[1], variable=answer, value=2)
+                answer2.grid(row=6, column=1, columnspan=3)
+    
+                
+                answer3 = Tkinter.Radiobutton(rootTestTaker, text="C. "+i[2], variable=answer, value=3)
+                answer3.grid(row=7, column=1, columnspan=3)
+    
+                
+                answer4 = Tkinter.Radiobutton(rootTestTaker, text="D. "+i[3], variable=answer, value=4)
+                answer4.grid(row=8, column=1, columnspan=3)
+    
+            
+                Tkinter.Button(rootTestTaker, text="Next Question", command=add).grid(row=9, column=1)
+                Tkinter.Button(rootTestTaker, text="New Question", command=new).grid(row=9, column=2)
+                Tkinter.Button(rootTestTaker, text="Finish Test", command=finish).grid(row=9, column=3)
+        question()
+
     def vAssignments():
         print 'Assignments viewed'
     def cAssignments():
@@ -211,6 +258,11 @@ def student(account):
     Tkinter.Label(rootSim).grid(row=3)
     viewAssignments = Tkinter.Button(rootSim, text="View \nAssignments", command=vAssignments, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=4, column=0)
     createAssignments = Tkinter.Button(rootSim, text="Complete an \nAssignment", command=cAssignments, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=4, column=1)
+    Tkinter.Label(rootSim).grid(row=5)
+    def restartFromSim():
+        rootSim.destroy()
+        init()
+    back = Tkinter.Button(rootSim, text="Go Back", command=restartFromSim, width=32, height=2, bg="light gray", font=("Arial", 20)).grid(row=6, column=0, columnspan=2)
 
 def teacher(account):
     #get list of all students
@@ -264,10 +316,7 @@ def teacher(account):
         Science = Tkinter.Button(rootGrades, text="Science", command=science, width=20, height=2, bg="light gray", font=("Arial", 10)).grid(row=4, column=2)
 
     def makeTest():
-       
-        def question():
-            print 'Test maken'
-            
+        def question():   
             rootTestMaker = Tkinter.Tk()
             rootTestMaker.title("SIM - Student Information Manager")
             rootTestMaker.minsize(400,400)
@@ -275,7 +324,7 @@ def teacher(account):
             Tkinter.Label(rootTestMaker, text=account['first'] + " " + account['last'], font=("Arial", 20)).grid(row=1, column=0, columnspan=4)
 
             Tkinter.Label(rootTestMaker, text="Question:").grid(row=3, column=0)
-            q = Tkinter.Entry(rootTestMaker)
+            q = Tkinter.Text(rootTestMaker, height=3)
             q.grid(row=3, column = 1, rowspan=2, columnspan=3)
             
             answer = IntVar(rootTestMaker)
@@ -317,26 +366,12 @@ def teacher(account):
             def new():
                 rootTestMaker.destroy()
                 question()
+            def finish():
+                rootTestMaker.destroy()
             Tkinter.Button(rootTestMaker, text="Save Question", command=add).grid(row=9, column=1)
             Tkinter.Button(rootTestMaker, text="New Question", command=new).grid(row=9, column=2)
-
+            Tkinter.Button(rootTestMaker, text="Finish Test", command=finish).grid(row=9, column=3)
         question()
-
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
 
     def gradeAssignments():
         print 'Assignments graded'
@@ -474,6 +509,12 @@ def teacher(account):
     gradeAssignments = Tkinter.Button(rootSim, text="Grade \nAssignments", command=gradeAssignments, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=4, column=0)
     createAssignments = Tkinter.Button(rootSim, text="Create an \nAssignment", command=createAssignments, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=4, column=1)
     vstudents = Tkinter.Button(rootSim, text="View \nStudents", command=viewStudents, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=4, column=2)
+    Tkinter.Label(rootSim).grid(row=5)
+    def restartFromSim():
+        rootSim.destroy()
+        init()
+    back = Tkinter.Button(rootSim, text="Go Back", command=restartFromSim, width=48, height=2, bg="light gray", font=("Arial", 20)).grid(row=6, column=0, columnspan=3)
+
 
 
 user = {'username': '1',
@@ -500,8 +541,9 @@ user = {'username': '2',
                             'Science': 20 } }
 users.append(user)
 
+
 ###############################
 #MUST BE THE LAST LINE OF CODE#
 ############################### 
 def start():
-    rootLogin.mainloop()
+    init()
