@@ -45,6 +45,8 @@ from Tkinter import *
 ############################################
 key = []
 test = []
+createdAssignments = []
+completedAssignments = []
 alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5' , '6', '7', '8', '9']
 users = [{'username': '', 'grades': {'English': 100, 'Math': 100, 'Social Studies': 100, 'Science': 100}, 'password': '', 'code': [], 'first': 'ad', 'last': 'min', 'role': 'teacher', 'tests' : []}]
 
@@ -262,19 +264,91 @@ def student(account):
                        
         quizQ()
     def vAssignments():
-        print 'Assignments viewed'
+        global v
+        v = 0
+        def view():
+            global v
+            rootAssignView = Tkinter.Tk()
+            rootAssignView.title("SIM - Student Information Manager")
+            rootAssignView.minsize(400,400)
+            Tkinter.Label(rootAssignView, text="Student Information Manager", font=("Arial", 30)).grid(row=0, column=0, columnspan=4)
+            Tkinter.Label(rootAssignView, text=account['first'] + " " + account['last'], font=("Arial", 20)).grid(row=1, column=0, columnspan=4)
+            Tkinter.Label(rootAssignView, text="Question:", anchor=N).grid(row=3, column=0)
+            q = Tkinter.Text(rootAssignView, height=20, width=50)
+            q.grid(row=3, column=1, columnspan=2)
+            q.insert(END, createdAssignments[v])
+            q.config(state=DISABLED)
+            Tkinter.Label(rootAssignView).grid(row=3, column=3)
+    
+            def next():
+                global v
+                v += 1
+                rootAssignView.destroy()
+                if len(createdAssignments) > v:
+                    view()
+            Tkinter.Label(rootAssignView).grid(row=4)
+            if len(createdAssignments) > v+1:
+                Tkinter.Button(rootAssignView, text="Next Question", command=next, font=("Arial", 12)).grid(row=5, columnspan=4)   
+        view()
     def cAssignments():
-        print 'Assignments completed'    
+        global v
+        v = 0
+        def do():
+            
+            global v
+            rootAssignDo = Tkinter.Tk()
+            rootAssignDo.title("SIM - Student Information Manager")
+            rootAssignDo.minsize(400,400)
+            Tkinter.Label(rootAssignDo, text="Student Information Manager", font=("Arial", 30)).grid(row=0, column=0, columnspan=8)
+            Tkinter.Label(rootAssignDo, text=account['first'] + " " + account['last'], font=("Arial", 20)).grid(row=1, column=0, columnspan=8)
+            Tkinter.Label(rootAssignDo, text="Question:", anchor=N).grid(row=3, column=0)
+            q = Tkinter.Text(rootAssignDo, height=20, width=50)
+            q.grid(row=3, column=1, columnspan=2)
+            q.insert(END, createdAssignments[v])
+            q.config(state=DISABLED)
+            Tkinter.Label(rootAssignDo).grid(row=3, column=3)
+
+            Tkinter.Label(rootAssignDo, text="Answer:", anchor=N).grid(row=3, column=4)
+            a = Tkinter.Text(rootAssignDo, height=20, width=50)
+            a.grid(row=3, column=5, columnspan=2)
+            Tkinter.Label(rootAssignDo).grid(row=5, column=7)
+
+
+
+            def done():
+                task = []
+                task.append(account)
+                task.append(createdAssignments[v])
+                task.append(a.get("1.0", END))
+                
+                completedAssignments.append(task)
+                rootAssignDo.destroy()
+
+            def next():
+                global v
+                v += 1
+                if len(createdAssignments) > v:
+                    do()
+                    done()
+
+            Tkinter.Label(rootAssignDo).grid(row=4)
+            if len(createdAssignments) > v+1:
+                Tkinter.Button(rootAssignDo, text="Next Question", command=next, font=("Arial", 12)).grid(row=5, columnspan=8)
+            else:
+                Tkinter.Button(rootAssignDo, text="Done", command=done, font=("Arial", 12)).grid(row=5, columnspan=8)
+
+        do() 
+ 
     rootSim = Tkinter.Tk()
     rootSim.title("SIM - Student Information Manager")
     rootSim.minsize(400,400)
     Tkinter.Label(rootSim, text="Student Information Manager", font=("Arial", 30)).grid(row=0, column=0, columnspan=2)
     Tkinter.Label(rootSim, text=account['first'] + " " + account['last'], font=("Arial", 20)).grid(row=1, column=0, columnspan=2)
-    grades = Tkinter.Button(rootSim, text="View \nGrades", command=viewGrades, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=2, column=0)
-    takeTheTest = Tkinter.Button(rootSim, text="Take A \nTest", command=takeTest, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=2, column=1)
+    grades = Tkinter.Button(rootSim, text="View\nGrades", command=viewGrades, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=2, column=0)
+    takeTheTest = Tkinter.Button(rootSim, text="Take A\nTest", command=takeTest, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=2, column=1)
     Tkinter.Label(rootSim).grid(row=3)
-    viewAssignments = Tkinter.Button(rootSim, text="View \nAssignments", command=vAssignments, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=4, column=0)
-    createAssignments = Tkinter.Button(rootSim, text="Complete an \nAssignment", command=cAssignments, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=4, column=1)
+    viewAssignments = Tkinter.Button(rootSim, text="View\nAssignments", command=vAssignments, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=4, column=0)
+    createAssignments = Tkinter.Button(rootSim, text="Complete an\nAssignment", command=cAssignments, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=4, column=1)
     Tkinter.Label(rootSim).grid(row=5)
     def restartFromSim():
         rootSim.destroy()
@@ -398,11 +472,87 @@ def teacher(account):
         question()
 
     def gradeAssignments():
-        print 'Assignments graded'
+        if len(completedAssignments) != 0:
+            global f
+            f = 0
+            def do():
+                global f
+                global sub
+                global completedAssignments
+                rootAssignGrade = Tkinter.Tk()
+                rootAssignGrade.title("SIM - Student Information Manager")
+                rootAssignGrade.minsize(400,400)
+                Tkinter.Label(rootAssignGrade, text="Student Information Manager", font=("Arial", 30)).grid(row=0, column=0, columnspan=8)
+                Tkinter.Label(rootAssignGrade, text=account['first'] + " " + account['last'], font=("Arial", 20)).grid(row=1, column=0, columnspan=8)
+                Tkinter.Label(rootAssignGrade, text=completedAssignments[f][0]['first'] + " " + completedAssignments[f][0]['last'], font=("Arial", 20)).grid(row=1, column=0, columnspan=8)
+                Tkinter.Label(rootAssignGrade, text="Question:", anchor=N).grid(row=3, column=0)
+                q = Tkinter.Text(rootAssignGrade, height=20, width=50)
+                q.grid(row=3, column=1, columnspan=2)
+                q.insert(END, createdAssignments[f][1])
+                q.config(state=DISABLED)
+                Tkinter.Label(rootAssignGrade).grid(row=3, column=3)
+    
+                Tkinter.Label(rootAssignGrade, text="Answer:", anchor=N).grid(row=3, column=4)
+                a = Tkinter.Text(rootAssignGrade, height=20, width=50)
+                a.grid(row=3, column=5, columnspan=2)
+                a.insert(END, completedAssignments[f][2])
+                a.config(state=DISABLED)
+                Tkinter.Label(rootAssignGrade).grid(row=5, column=7)
+    
+                #row 6, 8 columns (0-7)
+                subject=StringVar(rootAssignGrade)
+                subject.set('English')
+    
+                def changing(subject):
+                    global sub
+                    sub = subject
+                    currentGrade = Tkinter.Label(rootAssignGrade, text=completedAssignments[f][0]['grades'][subject], font=("Arial", 10)).grid(row=6, column=4)
+    
+                option = OptionMenu(rootAssignGrade, subject, 'English', 'Math', 'Social Studies', 'Science', command=changing)
+                option.grid(row=6, column=2)
+                changing('English')
+    
+    
+                futureGrade = Tkinter.Entry(rootAssignGrade)
+                futureGrade.grid(row=6, column=6)
+                def go():
+                    global sub
+                    completedAssignments[f][0]['grades'][sub] = int(futureGrade.get())
+                    changing(sub)
+                submit = Tkinter.Button(rootAssignGrade, text='Submit Change', command=go).grid(row=6, column=8)
+    
+                def next():
+                    global f
+                    f += 1
+                    if len(createdAssignments) > f:
+                        do()
+                    rootAssignGrade.destroy()
+    
+    
+                Tkinter.Label(rootAssignGrade).grid(row=4)
+                Tkinter.Button(rootAssignGrade, text="Next Response", command=next, font=("Arial", 12)).grid(row=10, columnspan=8)
+                Tkinter.Label(rootAssignGrade).grid(row=7)
+    
+            do() 
+            
 
     def createAssignments():
-        print 'Assignments created' 
-  
+        rootAssignMaker = Tkinter.Tk()
+        rootAssignMaker.title("SIM - Student Information Manager")
+        rootAssignMaker.minsize(400,400)
+        Tkinter.Label(rootAssignMaker, text="Student Information Manager", font=("Arial", 30)).grid(row=0, column=0, columnspan=4)
+        Tkinter.Label(rootAssignMaker, text=account['first'] + " " + account['last'], font=("Arial", 20)).grid(row=1, column=0, columnspan=4)
+        Tkinter.Label(rootAssignMaker, text="Question:", anchor=N).grid(row=3, column=0)
+        q = Tkinter.Text(rootAssignMaker, height=20, width=50)
+        q.grid(row=3, column=1, columnspan=2)
+        Tkinter.Label(rootAssignMaker).grid(row=3, column=3)
+
+        def done():
+            createdAssignments.append(q.get("1.0", END))
+            rootAssignMaker.destroy()
+        Tkinter.Label(rootAssignMaker).grid(row=4)
+        Tkinter.Button(rootAssignMaker, text="Done", command=done, font=("Arial", 12)).grid(row=5, columnspan=4)
+        
     def viewStudents():
         rootStudents = Tkinter.Tk()
         rootStudents.title("SIM - Student Information Manager")
@@ -435,7 +585,7 @@ def teacher(account):
                                 STUDENT = j
                 currentGrade = Tkinter.Label(rootChange, text=STUDENT['grades']['English'], font=("Arial", 10)).grid(row=7, column=1)
                 futureGrade = Tkinter.Entry(rootChange)
-                futureGrade.grid(row=7, column=2) ##dont actually remember what I was gonna do with this
+                futureGrade.grid(row=7, column=2)
                 def go():
                     STUDENT['grades']['English'] = futureGrade.get()
                     changed(kid)
@@ -526,13 +676,13 @@ def teacher(account):
     rootSim.minsize(400,400)
     Tkinter.Label(rootSim, text="Student Information Manager", font=("Arial", 30)).grid(row=0, column=0, columnspan=3)
     Tkinter.Label(rootSim, text=account['first'] + " " + account['last'], font=("Arial", 20)).grid(row=1, column=0, columnspan=3)
-    vgrades = Tkinter.Button(rootSim, text="View \nGrades", command=viewGrades, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=2, column=0)
-    cgrades = Tkinter.Button(rootSim, text="Change \nGrades", command=changeGrades, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=2, column=1)
-    makeTest = Tkinter.Button(rootSim, text="Make A \nTest", command=makeTest, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=2, column=2)
+    vgrades = Tkinter.Button(rootSim, text="View\nGrades", command=viewGrades, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=2, column=0)
+    cgrades = Tkinter.Button(rootSim, text="Change\nGrades", command=changeGrades, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=2, column=1)
+    makeTest = Tkinter.Button(rootSim, text="Make A\nTest", command=makeTest, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=2, column=2)
     Tkinter.Label(rootSim).grid(row=3)
-    gradeAssignments = Tkinter.Button(rootSim, text="Grade \nAssignments", command=gradeAssignments, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=4, column=0)
-    createAssignments = Tkinter.Button(rootSim, text="Create an \nAssignment", command=createAssignments, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=4, column=1)
-    vstudents = Tkinter.Button(rootSim, text="View \nStudents", command=viewStudents, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=4, column=2)
+    gradeAssignments = Tkinter.Button(rootSim, text="Grade\nAssignments", command=gradeAssignments, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=4, column=0)
+    createAssignments = Tkinter.Button(rootSim, text="Create an\nAssignment", command=createAssignments, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=4, column=1)
+    vstudents = Tkinter.Button(rootSim, text="View\nStudents", command=viewStudents, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=4, column=2)
     Tkinter.Label(rootSim).grid(row=5)
     def restartFromSim():
         rootSim.destroy()
