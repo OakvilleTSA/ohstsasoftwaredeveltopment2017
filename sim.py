@@ -22,8 +22,8 @@ OAKVILLE TSA PROJECT 2017
 
 Student Information Manager (SIM)
 Manages student information from a teacher/administrative perspective while also
-allowing the student to take tests, look at grades, look at homework, email,and
-more. Parents also can see their kids progress in school.
+allowing the student to take tests, look at grades, look at homework, and
+more.
 
 Credits:
 Garrett Summerfield - i <3 linux
@@ -44,6 +44,7 @@ from Tkinter import *
 #VARIABLES, LISTS, ETC. ALL INITIALIZE HERE#
 ############################################
 key = []
+test = []
 alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5' , '6', '7', '8', '9']
 users = [{'username': '', 'grades': {'English': 100, 'Math': 100, 'Social Studies': 100, 'Science': 100}, 'password': '', 'code': [], 'first': 'ad', 'last': 'min', 'role': 'teacher'}]
 
@@ -86,10 +87,12 @@ def loginAttempt():
     match = False
     for account in users:
         if userid == account['username']:
+            match = True
             if decrypt(account['password'], account['code']) == passwordB.get().lower():
                 #open next screen
-                match = True
                 sim(account)
+            else:
+                Tkinter.Label(rootLogin, text="Incorrect Password").grid()
     else:
         if match == False:
             newUser(userid)
@@ -261,7 +264,79 @@ def teacher(account):
         Science = Tkinter.Button(rootGrades, text="Science", command=science, width=20, height=2, bg="light gray", font=("Arial", 10)).grid(row=4, column=2)
 
     def makeTest():
-        print 'Test maken'
+       
+        def question():
+            print 'Test maken'
+            
+            rootTestMaker = Tkinter.Tk()
+            rootTestMaker.title("SIM - Student Information Manager")
+            rootTestMaker.minsize(400,400)
+            Tkinter.Label(rootTestMaker, text="Student Information Manager", font=("Arial", 30)).grid(row=0, column=0, columnspan=4)
+            Tkinter.Label(rootTestMaker, text=account['first'] + " " + account['last'], font=("Arial", 20)).grid(row=1, column=0, columnspan=4)
+
+            Tkinter.Label(rootTestMaker, text="Question:").grid(row=3, column=0)
+            q = Tkinter.Entry(rootTestMaker)
+            q.grid(row=3, column = 1, rowspan=2, columnspan=3)
+            
+            answer = IntVar(rootTestMaker)
+            answer.set(0)
+
+            Tkinter.Label(rootTestMaker, text="A.").grid(row=5, column=1)
+            answer1 = Tkinter.Radiobutton(rootTestMaker, variable=answer, value=1)
+            answer1.grid(row=5, column=2)
+            option1 = Tkinter.Entry(rootTestMaker)
+            option1.grid(row=5, column=3)
+            
+            Tkinter.Label(rootTestMaker, text="B.").grid(row=6, column=1)
+            answer2 = Tkinter.Radiobutton(rootTestMaker, variable=answer, value=2)
+            answer2.grid(row=6, column=2)
+            option2 = Tkinter.Entry(rootTestMaker)
+            option2.grid(row=6, column=3)
+            
+            Tkinter.Label(rootTestMaker, text="C.").grid(row=7, column=1)
+            answer3 = Tkinter.Radiobutton(rootTestMaker, variable=answer, value=3)
+            answer3.grid(row=7, column=2)
+            option3 = Tkinter.Entry(rootTestMaker)
+            option3.grid(row=7, column=3)
+            
+            Tkinter.Label(rootTestMaker, text="D.").grid(row=8, column=1)
+            answer4 = Tkinter.Radiobutton(rootTestMaker, variable=answer, value=4)
+            answer4.grid(row=8, column=2)
+            option4 = Tkinter.Entry(rootTestMaker)
+            option4.grid(row=8, column=3)
+        
+            def add():
+                question = []
+                question.append(option1.get())
+                question.append(option2.get())
+                question.append(option3.get())
+                question.append(option4.get())
+                question.append(answer.get())
+
+                test.append(question)
+            def new():
+                rootTestMaker.destroy()
+                question()
+            Tkinter.Button(rootTestMaker, text="Save Question", command=add).grid(row=9, column=1)
+            Tkinter.Button(rootTestMaker, text="New Question", command=new).grid(row=9, column=2)
+
+        question()
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
     def gradeAssignments():
         print 'Assignments graded'
