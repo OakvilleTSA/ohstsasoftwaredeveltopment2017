@@ -299,36 +299,88 @@ def teacher(account):
                                 x += 1
                             if i == x:
                                 STUDENT = j
-                person = Tkinter.Label(rootChange, text=kid, font=("Arial", 10)).grid(row=7, column=1)
-                currentGrade = Tkinter.Label(rootChange, text=STUDENT['grades']['English'], font=("Arial", 10)).grid(row=7, column=2)
-                futureGrade = Tkinter.Entry(rootChange).grid(row=7, column=3) ##dont actually remember what I was gonna do with this
+                currentGrade = Tkinter.Label(rootChange, text=STUDENT['grades']['English'], font=("Arial", 10)).grid(row=7, column=1)
+                futureGrade = Tkinter.Entry(rootChange)
+                futureGrade.grid(row=7, column=2) ##dont actually remember what I was gonna do with this
+                def go():
+                    STUDENT['grades']['English'] = futureGrade.get()
+                    changed(kid)
+                submit = Tkinter.Button(rootChange, text='Submit Change', command=go).grid(row=8, column=1)
             option = OptionMenu(rootChange, student, *students, command=changed).grid(row=6, column=0)
             changed(student.get())
 
 
         def math():
-            i = 0
-            for user in users:
-                if user['role'] == 'student':
-                    Tkinter.Label(rootChange, text=user['last'] + ", " + user['first'], font=("Arial", 15)).grid(row=i+6, column=0)  
-                    Tkinter.Entry(rootChange, font=("Arial", 15)).grid(row=i+6, column=2)                    
-                i += 1
+            student = StringVar(rootChange)
+            student.set(students[0])
+           
+            def changed(kid):
+                Tkinter.Label(rootChange, text=kid, font=("Arial", 10)).grid(row=7, column=0)
+                for i in range(len(students)):
+                    if kid == students[i]:
+                        x = -1
+                        for j in users:
+                            if j['role'] == 'student':
+                                x += 1
+                            if i == x:
+                                STUDENT = j
+                currentGrade = Tkinter.Label(rootChange, text=STUDENT['grades']['Math'], font=("Arial", 10)).grid(row=7, column=1)
+                futureGrade = Tkinter.Entry(rootChange)
+                futureGrade.grid(row=7, column=2) ##dont actually remember what I was gonna do with this
+                def go():
+                    STUDENT['grades']['Math'] = futureGrade.get()
+                    changed(kid)
+                submit = Tkinter.Button(rootChange, text='Submit Change', command=go).grid(row=8, column=1)
+            option = OptionMenu(rootChange, student, *students, command=changed).grid(row=6, column=0)
+            changed(student.get())
 
         def socialStudies():
-            i = 0
-            for user in users:
-                if user['role'] == 'student':
-                    Tkinter.Label(rootChange, text=user['last'] + ", " + user['first'], font=("Arial", 15)).grid(row=i+6, column=0)  
-                    Tkinter.Entry(rootChange, text=user['grades']['Social Studies'], font=("Arial", 15)).grid(row=i+6, column=2)                    
-                i += 1
+            student = StringVar(rootChange)
+            student.set(students[0])
+           
+            def changed(kid):
+                Tkinter.Label(rootChange, text=kid, font=("Arial", 10)).grid(row=7, column=0)
+                for i in range(len(students)):
+                    if kid == students[i]:
+                        x = -1
+                        for j in users:
+                            if j['role'] == 'student':
+                                x += 1
+                            if i == x:
+                                STUDENT = j
+                currentGrade = Tkinter.Label(rootChange, text=STUDENT['grades']['Social Studies'], font=("Arial", 10)).grid(row=7, column=1)
+                futureGrade = Tkinter.Entry(rootChange)
+                futureGrade.grid(row=7, column=2) ##dont actually remember what I was gonna do with this
+                def go():
+                    STUDENT['grades']['Social Studies'] = futureGrade.get()
+                    changed(kid)
+                submit = Tkinter.Button(rootChange, text='Submit Change', command=go).grid(row=8, column=1)
+            option = OptionMenu(rootChange, student, *students, command=changed).grid(row=6, column=0)
+            changed(student.get())
                 
         def science():
-            i = 0
-            for user in users:
-                if user['role'] == 'student':
-                    Tkinter.Label(rootChange, text=user['last'] + ", " + user['first'], font=("Arial", 15)).grid(row=i+6, column=0)  
-                    Tkinter.Entry(rootChange, text=user['grades']['Science'], font=("Arial", 15)).grid(row=i+6, column=2)                    
-                i += 1  
+            student = StringVar(rootChange)
+            student.set(students[0])
+           
+            def changed(kid):
+                Tkinter.Label(rootChange, text=kid, font=("Arial", 10)).grid(row=7, column=0)
+                for i in range(len(students)):
+                    if kid == students[i]:
+                        x = -1
+                        for j in users:
+                            if j['role'] == 'student':
+                                x += 1
+                            if i == x:
+                                STUDENT = j
+                currentGrade = Tkinter.Label(rootChange, text=STUDENT['grades']['Science'], font=("Arial", 10)).grid(row=7, column=1)
+                futureGrade = Tkinter.Entry(rootChange)
+                futureGrade.grid(row=7, column=2) ##dont actually remember what I was gonna do with this
+                def go():
+                    STUDENT['grades']['Science'] = futureGrade.get()
+                    changed(kid)
+                submit = Tkinter.Button(rootChange, text='Submit Change', command=go).grid(row=8, column=1)
+            option = OptionMenu(rootChange, student, *students, command=changed).grid(row=6, column=0)
+            changed(student.get()) 
         
         English = Tkinter.Button(rootChange, text="English", command=english, width=20, height=2, bg="light gray", font=("Arial", 10)).grid(row=3, column=0)
         Math = Tkinter.Button(rootChange, text="Math", command=math, width=20, height=2, bg="light gray", font=("Arial", 10)).grid(row=3, column=2)
@@ -347,6 +399,32 @@ def teacher(account):
     gradeAssignments = Tkinter.Button(rootSim, text="Grade \nAssignments", command=gradeAssignments, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=4, column=0)
     createAssignments = Tkinter.Button(rootSim, text="Create an \nAssignment", command=createAssignments, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=4, column=1)
     vstudents = Tkinter.Button(rootSim, text="View \nStudents", command=viewStudents, width=15, height=5, bg="light gray", font=("Arial", 20)).grid(row=4, column=2)
+
+
+user = {'username': '1',
+                'password': '2',
+                'first': '3',
+                'last': '4',
+                'role': 'student',
+                'code': [6],
+                'grades': { 'English': 10,
+                            'Math': 10,
+                            'Social Studies': 10,
+                            'Science': 10 } }
+users.append(user)
+
+user = {'username': '2',
+                'password': '3',
+                'first': '4',
+                'last': '5',
+                'role': 'student',
+                'code': [7],
+                'grades': { 'English': 20,
+                            'Math': 20,
+                            'Social Studies': 20,
+                            'Science': 20 } }
+users.append(user)
+
 ###############################
 #MUST BE THE LAST LINE OF CODE#
 ############################### 
