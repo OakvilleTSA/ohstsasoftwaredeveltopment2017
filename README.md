@@ -6,7 +6,7 @@ This is a Python program that manages student grades, tests, and even more admin
 You can log in and toy around with the program for whatever you need.
 
 # TODO:
-- [x] Foundation [INPROGRESS]
-- [ ] UI
-- [ ] Functionality
-- [ ] Testing
+- [x] Foundation
+- [x] UI [IN PROGRESS]
+- [x] Functionality
+- [x] Testing
